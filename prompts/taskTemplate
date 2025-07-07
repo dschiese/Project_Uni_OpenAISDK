@@ -1,0 +1,15 @@
+Given an erroneous GitHub repository, you should generate a problem description for the coding agent to fix the issue.
+
+<START PROBLEM STATEMENT>
+{Problem_statement}
+<END PROBLEM STATEMENT>
+
+<START VALIDATOR RESPONSE>
+Validator response from previous runs: {validator_input}
+<END VALIDATOR RESPONSE>
+
+Further repository Data:
+Patch: = {patch}
+instance_id = {instance_id}
+repoDir = {path_to_repository}
+FAIL_TO_PASS = {FAIL_TO_PASS}

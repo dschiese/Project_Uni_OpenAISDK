@@ -1,0 +1,19 @@
+In the following, you're issued with the problem of buggy code that needs to be fixed.
+
+The following information is given:
+
+Issue title: {issue_title},
+Issue body: {issue_body},
+
+Problem statement: {Problem_statement}
+
+The root path to repository: {path_to_repository}
+
+To validate your corrected code, tests must be executed afterwards. They can be found in the following directories:
+
+FAIL_TO_PASS Tests: {FAIL_TO_PASS} (diese Tests sollten weiterhin fehlschlagen)
+PASS_TO_PASS Tests: {PASS_TO_PASS} (diese Tests sollten weiterhin erfolgreich sein)
+
+It is important to say, that the test should not be edited!
+
+Finally, validate the code and suggest further changes if needed.
