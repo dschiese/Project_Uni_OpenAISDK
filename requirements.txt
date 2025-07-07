@@ -1,0 +1,6 @@
+requests
+pydantic
+dataclasses; python_version < "3.7"
+gitpython
+openai
+openai-agents
