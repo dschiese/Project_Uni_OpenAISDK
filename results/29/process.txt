@@ -1,0 +1,58 @@
+Running iteration 1 for task 29
+Prompt: Given an erroneous GitHub repository, you should generate a problem description for the coding agent to fix the issue.
+
+<START PROBLEM STATEMENT>
+Cannot override get_FOO_display() in Django 2.2+.
+Description
+	
+I cannot override the get_FIELD_display function on models since version 2.2. It works in version 2.1.
+Example:
+class FooBar(models.Model):
+	foo_bar = models.CharField(_("foo"), choices=[(1, 'foo'), (2, 'bar')])
+	def __str__(self):
+		return self.get_foo_bar_display() # This returns 'foo' or 'bar' in 2.2, but 'something' in 2.1
+	def get_foo_bar_display(self):
+		return "something"
+What I expect is that I should be able to override this function.
+
+<END PROBLEM STATEMENT>
+
+<START VALIDATOR RESPONSE>
+Validator response from previous runs: No previous runs executed
+<END VALIDATOR RESPONSE>
+
+Further repository Data:
+Patch: = diff --git a/django/db/models/fields/__init__.py b/django/db/models/fields/__init__.py
+--- a/django/db/models/fields/__init__.py
++++ b/django/db/models/fields/__init__.py
+@@ -763,8 +763,12 @@ def contribute_to_class(self, cls, name, private_only=False):
+             if not getattr(cls, self.attname, None):
+                 setattr(cls, self.attname, self.descriptor_class(self))
+         if self.choices is not None:
+-            setattr(cls, 'get_%s_display' % self.name,
+-                    partialmethod(cls._get_FIELD_display, field=self))
++            if not hasattr(cls, 'get_%s_display' % self.name):
++                setattr(
++                    cls,
++                    'get_%s_display' % self.name,
++                    partialmethod(cls._get_FIELD_display, field=self),
++                )
+ 
+     def get_filter_kwargs_for_object(self, obj):
+         """
+
+instance_id = django__django-11999
+repoDir = 29
+FAIL_TO_PASS = ["test_overriding_FIELD_display (model_fields.tests.GetFieldDisplayTests)"]
+
+------------------------------------------------------------------------------------------
+Step 1 output: CodingData(problem_description='In Django 2.2+, the behavior of overriding the `get_FIELD_display()` method has changed due to enhancements in the underlying model field implementation. The current implementation of `Field` in `django/db/models/fields/__init__.py` means that if a field already defines a method called `get_%s_display`, it will not override it, thus preventing custom implementations from being called. This results in the expected overridden value "something" from `get_foo_bar_display()` not being returned when `__str__()` is called in the `FooBar` model. The test case `test_overriding_FIELD_display` fails as it likely expects the overridden method to execute and return the expected custom display name instead of the default choice behavior introduced in Django 2.2.', file='django/db/models/fields/__init__.py')
+Problem description: In Django 2.2+, the behavior of overriding the `get_FIELD_display()` method has changed due to enhancements in the underlying model field implementation. The current implementation of `Field` in `django/db/models/fields/__init__.py` means that if a field already defines a method called `get_%s_display`, it will not override it, thus preventing custom implementations from being called. This results in the expected overridden value "something" from `get_foo_bar_display()` not being returned when `__str__()` is called in the `FooBar` model. The test case `test_overriding_FIELD_display` fails as it likely expects the overridden method to execute and return the expected custom display name instead of the default choice behavior introduced in Django 2.2.
+File: django/db/models/fields/__init__.py
+------------------------------
+Step 2 output: The bug related to overriding the `get_FIELD_display()` method in Django 2.2+ has been fixed in the specified file. The implementation ensures that any custom display methods are properly registered without being overridden by existing methods. If you need any more assistance or further modifications, feel free to ask!
+------------------------------
+Step 3/Test results: {"exitCode":0}
+------------------------------
+Step 4 output: Results(is_fixed=True, suggested_changes='')
+------------------------------

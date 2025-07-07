@@ -1,0 +1,75 @@
+Running iteration 1 for task 27
+Prompt: Given an erroneous GitHub repository, you should generate a problem description for the coding agent to fix the issue.
+
+<START PROBLEM STATEMENT>
+ForeignKey's to_field parameter gets the old field's name when renaming a PrimaryKey.
+Description
+	
+Having these two models 
+class ModelA(models.Model):
+	field_wrong = models.CharField('field1', max_length=50, primary_key=True) # I'm a Primary key.
+class ModelB(models.Model):
+	field_fk = models.ForeignKey(ModelA, blank=True, null=True, on_delete=models.CASCADE) 
+... migrations applyed ...
+the ModelA.field_wrong field has been renamed ... and Django recognizes the "renaming"
+# Primary key renamed
+class ModelA(models.Model):
+	field_fixed = models.CharField('field1', max_length=50, primary_key=True) # I'm a Primary key.
+Attempts to to_field parameter. 
+The to_field points to the old_name (field_typo) and not to the new one ("field_fixed")
+class Migration(migrations.Migration):
+	dependencies = [
+		('app1', '0001_initial'),
+	]
+	operations = [
+		migrations.RenameField(
+			model_name='modela',
+			old_name='field_wrong',
+			new_name='field_fixed',
+		),
+		migrations.AlterField(
+			model_name='modelb',
+			name='modela',
+			field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='app1.ModelB', to_field='field_wrong'),
+		),
+	]
+
+<END PROBLEM STATEMENT>
+
+<START VALIDATOR RESPONSE>
+Validator response from previous runs: No previous runs executed
+<END VALIDATOR RESPONSE>
+
+Further repository Data:
+Patch: = diff --git a/django/db/migrations/autodetector.py b/django/db/migrations/autodetector.py
+--- a/django/db/migrations/autodetector.py
++++ b/django/db/migrations/autodetector.py
+@@ -927,6 +927,10 @@ def generate_altered_fields(self):
+                 if remote_field_name:
+                     to_field_rename_key = rename_key + (remote_field_name,)
+                     if to_field_rename_key in self.renamed_fields:
++                        # Repoint both model and field name because to_field
++                        # inclusion in ForeignKey.deconstruct() is based on
++                        # both.
++                        new_field.remote_field.model = old_field.remote_field.model
+                         new_field.remote_field.field_name = old_field.remote_field.field_name
+                 # Handle ForeignObjects which can have multiple from_fields/to_fields.
+                 from_fields = getattr(new_field, 'from_fields', None)
+
+instance_id = django__django-11910
+repoDir = 27
+FAIL_TO_PASS = ["test_rename_referenced_primary_key (migrations.test_autodetector.AutodetectorTests)"]
+
+------------------------------------------------------------------------------------------
+Step 1 output: CodingData(problem_description="When renaming a primary key in Django's model (from `field_wrong` to `field_fixed` in `ModelA`), the associated foreign key in `ModelB` fails to update its `to_field` reference appropriately. The foreign key still points to the old field name (`field_wrong`) instead of the new one (`field_fixed`). This misconfiguration can cause breakage during migrations and lead to database integrity issues. The test case `test_rename_referenced_primary_key` from `migrations.test_autodetector.AutodetectorTests` is specifically designed to validate this renaming process, but due to the improper handling of updates on the foreign key reference, it currently fails.", file='django/db/migrations/autodetector.py')
+Problem description: When renaming a primary key in Django's model (from `field_wrong` to `field_fixed` in `ModelA`), the associated foreign key in `ModelB` fails to update its `to_field` reference appropriately. The foreign key still points to the old field name (`field_wrong`) instead of the new one (`field_fixed`). This misconfiguration can cause breakage during migrations and lead to database integrity issues. The test case `test_rename_referenced_primary_key` from `migrations.test_autodetector.AutodetectorTests` is specifically designed to validate this renaming process, but due to the improper handling of updates on the foreign key reference, it currently fails.
+File: django/db/migrations/autodetector.py
+------------------------------
+Step 2 output: The bug concerning the renaming of a primary key in Django's model has been addressed in the `autodetector.py` file. The necessary updates ensure that the foreign key reference also updates correctly when a primary key is renamed. 
+
+If you have any further questions or need additional changes, feel free to ask!
+------------------------------
+Step 3/Test results: {"exitCode":0}
+------------------------------
+Step 4 output: Results(is_fixed=True, suggested_changes='')
+------------------------------

@@ -8,7 +8,7 @@ Your task is to generate a clear and concise `problem_description` for a coding 
 
 You must:
 - Read the buggy file **once**
-- Read each file listed in `FAIL_TO_PASS` **once**
+- Read each file listed in `FAIL_TO_PASS` **once** - If the reading fails, **don't** try again
 - Do not read any file more than once
 - After reading all relevant files, write a single `problem_description` that:
   - Summarizes the likely root cause of the bug
