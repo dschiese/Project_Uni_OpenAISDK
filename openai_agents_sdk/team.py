@@ -86,7 +86,7 @@ def ensure_list(val):
 
 async def main():
 
-    for i in range(26, 31): # 30 tasks
+    for i in range(1, 31): # 30 tasks
         index = str(i)
 
         # Prepare environment
