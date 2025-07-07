@@ -32,13 +32,13 @@ Here, replace the volume mapping of "/repos" to the `repositories` directory in 
 
 In the `team.py` and `multi_agent_system_helper/openai_agents_sdk_tools.py` replace the BASE_PATH with the absolute path to the `results` folder in this repository.
 
-For example: `BASE_PATH = "/home/user/AutoGen/results"`
+For example: `BASE_PATH = "/home/user/openai_agents_sdk/results"`
 
 ## Set LLM 
 
 ### LiteLLM
 
-Replace the base_url property for the litellm_client as well as the key.
+TODO
 
 ### OpenAI
 
@@ -50,7 +50,7 @@ To set the used model, you can pass it to each agent separately.
 
 ## Run
 
-Run the team script from the AutoGen directory with `python -m AutoGen.team`
+Run the team script from the repository root directory with `python -m openai_agents_sdk.team`
 
 # Known problems
 
