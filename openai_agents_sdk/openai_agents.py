@@ -9,7 +9,9 @@ from typing import List
 import subprocess
 from dataclasses import dataclass
 
-BASE_PATH = "/home/dennisschiese/Projekte/Master/2. Semester/Automated Software Engineering/Projekt/results"
+# OLD APPROACH
+
+BASE_PATH = "REPLACE_IF_USED"
 
 # Dataclasses
 @dataclass
